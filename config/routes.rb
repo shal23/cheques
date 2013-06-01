@@ -1,4 +1,7 @@
 Cheques::Application.routes.draw do
+  resources :cheques
+
+
   authenticated :user do
     root :to => 'home#index'
   end

@@ -1,0 +1,81 @@
+<!--The following code determines what headline and buttons to show based on the parameters in the address bar-->
+
+<% if !params[:drawer] && !params[:payee] && !params[:drawer_payee] %>
+  <h3>All Cheques</h3>
+
+<% elsif params[:drawer] %>
+  <h3>Cheques made by <%= params[:drawer] %></h3>
+
+  <%= link_to "Cheques made out to " + params[:drawer], cheques_path(:payee => params[:drawer]), :class => 'btn btn-mini btn-inverse' %>
+
+  <%= link_to "Cheques made out to and by " + params[:drawer], cheques_path(:drawer_payee => params[:drawer]), :class => 'btn btn-mini btn-inverse' %>
+
+<% elsif params[:payee] %>
+  <h3>Cheques made out to <%= params[:payee] %></h3>
+
+  <%= link_to "Cheques made by " + params[:payee], cheques_path(:drawer => params[:payee]), :class => 'btn btn-mini btn-inverse' %>
+
+  <%= link_to "Cheques made out to and by " + params[:payee], cheques_path(:drawer_payee => params[:payee]), :class => 'btn btn-mini btn-inverse' %>
+
+<% elsif params[:drawer_payee] %>
+  <h3>Cheques made out to and by <%= params[:drawer_payee] %></h3>
+  
+  <%= link_to "Cheques made out to " + params[:drawer_payee], cheques_path(:payee => params[:drawer_payee]), :class => 'btn btn-mini btn-inverse' %>
+
+  <%= link_to "Cheques made by " + params[:drawer_payee], cheques_path(:drawer => params[:drawer_payee]), :class => 'btn btn-mini btn-inverse' %>
+
+<% end %>
+
+<br>
+<br>
+
+<!-- Table of cheque values. -->
+
+<table class="table table-striped">
+  <tr>
+    <th>Drawer</th>
+    <th>Payee</th>
+    <th>Date</th>
+    <th>Amount</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @cheques.each do |cheque| %>
+  <tr>
+    <!-- clicking on a name adds their name to the address parameters -->
+    <td>
+      <%= link_to cheque.drawer, cheques_path(:drawer => cheque.drawer), :class => 'name' %>
+    </td>
+    <td>
+      <%= link_to cheque.payee, cheques_path(:payee => cheque.payee), :class => 'name' %>
+    </td>
+    <td>
+      <%= cheque.created_at.strftime("%m/%d/%Y") %>
+    </td>
+    <td>
+      <!-- integer amount shown as proper currency value-->
+      <price><%= number_to_currency(cheque.amount) %></price>
+    </td>
+    <td>
+      <!-- if a name has been selected then give the option to show all cheques again -->
+      <%= link_to 'Show All', cheques_path, :class => 'btn btn-primary', :style => 'float:right' if params[:drawer] || params[:payee] || params[:drawer_payee] %>
+    </td>
+    <td>
+      <%= link_to 'Show', cheque, :class => 'btn btn-info', :style => 'float:right' %>
+    </td>
+    <td>
+      <%= link_to 'Edit', edit_cheque_path(cheque), :class => 'btn btn-success', :style => 'float:right' %>
+    </td>
+    <td>
+      <%= link_to 'Destroy', cheque, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Cheque', new_cheque_path, :class => 'btn btn-primary' %>

@@ -1,0 +1,65 @@
+<!-- Show a blank cheque image with dynamic text overlaying it -->
+
+<div align="center">
+
+	<%= image_tag "blank_cheque.jpg", :style => "min-width:1000px; position:relative" %>
+
+	<div class="container" style = "position:relative">
+
+		<h2 style="position:absolute; bottom:80px; left:620px;"><%= @cheque.drawer %></h2>
+
+		<h2 style="position:absolute; bottom:230px; left:300px"><%= @cheque.payee %></h2>
+
+		<h3 style="position:absolute; bottom:295px; left:850px">
+			<%= @cheque.created_at.strftime("%m/%d/%Y") %>
+		</h3>
+
+		<% @amount_as_words = number_with_precision @cheque.amount, :precision => 2 %>
+		<% @word_count = @amount_as_words.length %>
+		<% if @word_count > 7 %>
+			<h3 style="position:absolute; bottom:225px; left:880px">
+				<%= number_with_precision @cheque.amount, :precision => 2 %>
+			</h3>
+		<% else %>
+			<h2 style="position:absolute; bottom:225px; left:880px">
+				<%= number_with_precision @cheque.amount, :precision => 2 %>
+			</h2>
+		<% end %>
+
+		<% @amount_as_words = number_to_currency_in_words(@cheque.amount, connector: ' and ') %>
+		<% @word_count = @amount_as_words.length %>
+		<% if @word_count > 35 %>
+			<h4 style="position:absolute; bottom:180px; left:130px">
+				<%= number_to_currency_in_words(@cheque.amount, connector: ' and ') %>
+			</h4>
+		<% elsif @word_count > 20 && @word_count < 35 %>
+			<h3 style="position:absolute; bottom:180px; left:250px">
+				<%= number_to_currency_in_words(@cheque.amount, connector: ' and ') %>
+			</h3>
+		<% else %>
+			<h2 style="position:absolute; bottom:180px; left:250px">
+				<%= number_to_currency_in_words(@cheque.amount, connector: ' and ') %>
+			</h2>
+		<% end %>
+
+	</div>
+</div>
+
+<hr>
+
+<!-- Text-only version of the cheque in case the cheque image and text doesn't display properly-->
+
+<div class="row-fluid">
+	<div class="span8">
+		<h5>
+			<%= @cheque.drawer + '\'s cheque to ' + @cheque.payee %>
+			<%= 'to the amount of ' + number_to_currency_in_words(@cheque.amount, connector: ' and ') %>
+			(or <price><%= number_to_currency(@cheque.amount) %></price>)
+			<%= 'dated at ' + @cheque.created_at.strftime("%m/%d/%Y") %>
+		</h5>
+	</div>
+	<div class="span4">
+		<h3 align="center"><%= link_to 'Edit', edit_cheque_path(@cheque), :class => 'btn btn-success' %> |
+		<%= link_to 'Back', cheques_path, :class => 'btn btn-warning' %></h3>
+	</div>
+</div>

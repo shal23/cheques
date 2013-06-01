@@ -1,0 +1,30 @@
+<%= form_for(@cheque) do |f| %>
+  <% if @cheque.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@cheque.errors.count, "error") %> prohibited this cheque from being saved:</h2>
+
+      <ul>
+      <% @cheque.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :drawer %><br />
+    <%= f.text_field :drawer, :placeholder => 'Mr. Smith' %>
+  </div>
+  <div class="field">
+    <%= f.label :payee %><br />
+    <%= f.text_field :payee, :placeholder => 'Mrs. Smith' %>
+  </div>
+  <div class="field">
+    <%= f.label :amount %><br />
+    <strong style="font-size:25px">$</strong>
+    <%= f.text_field :amount, :placeholder => '100.00' %>
+  </div>
+
+    <%= f.submit "Save cheque", class: "btn btn-primary" %>
+
+<% end %>
